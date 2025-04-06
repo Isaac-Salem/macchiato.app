@@ -83,16 +83,20 @@
 
                         <div :class="(filters.amount > 20) ? 'overflow-y-scroll max-h-[59rem]': ''" class="w-[38rem] sm:w-full h-auto px-5 sm:px-0 mt-5">
                             <table class="w-full">
-                                <tr class="text-description text-left">
-                                    <th class="pl-8">Date</th>
-                                    <th class="text-center pr-2">Pity</th>
-                                    <th>Name</th>
-                                </tr>
-                                <tr v-for="pull in gacha.banners[bannerFocused.type].pulls.filter(pull => filters.rarities[pull[4]]).slice(0, filters.amount)" :class="`pull-${pull[4]}`" class="h-10 border-t border-[#2c3038]">
-                                    <th class="w-[12.5rem] sm:w-[5rem] pl-5 text-description">{{ pull[0] }}</th>
-                                    <th><div class="flex justify-center">{{ pull[5] }}<Tooltip v-if="pull[6]" message="Guaranteed"><img class="w-2" src="/guaranteed.webp"></Tooltip></div></th>
-                                    <th class="text-left pl-2 flex items-center sm:mt-1 capitalize"><img :class="`pull-${pull[3]}`" class="w-10 h-10 mr-2" :src="`/${pull[3]}s/${pull[1]}.webp`">{{ pull[2] }}</th>
-                                </tr>
+                                <thead>
+                                    <tr class="text-description text-left">
+                                        <th class="pl-8">Date</th>
+                                        <th class="text-center pr-2">Pity</th>
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="pull in gacha.banners[bannerFocused.type].pulls.filter(pull => filters.rarities[pull[4]]).slice(0, filters.amount)" :class="`pull-${pull[4]}`" class="h-10 border-t border-[#2c3038]">
+                                        <th class="w-[12.5rem] sm:w-[5rem] pl-5 text-description">{{ pull[0] }}</th>
+                                        <th><div class="flex justify-center">{{ pull[5] }}<Tooltip v-if="pull[6]" message="Guaranteed"><img class="w-2" src="/guaranteed.webp"></Tooltip></div></th>
+                                        <th class="text-left pl-2 flex items-center sm:mt-1 capitalize"><img :class="`pull-${pull[3]}`" class="w-10 h-10 mr-2" :src="`/${pull[3]}s/${pull[1]}.webp`">{{ pull[2] }}</th>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
 
@@ -142,12 +146,12 @@
                 if (attainable) {
                     if (attainable.item == "character") {
                         return [
-                            attainable.role, 
+                            attainable.role,
                             attainable.roleDescriptions.join(" / ").replaceAll("_", " ")
                         ]
                     } else {
                         return [
-                            attainable.type.toUpperCase(), 
+                            attainable.type.toUpperCase(),
                             `${{"smg": "light", "ar": "medium", "rf": "heavy", "hg": "light", "sg": "shotgum", "bld": "melee"}[attainable.type]} ammo`.replace("melee ammo", "melee")
                         ]
                     }
