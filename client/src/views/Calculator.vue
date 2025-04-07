@@ -1,19 +1,34 @@
 <template>
     <div class="w-full h-full flex flex-col items-center jus pt-10 gap-20 gacha-main">
         <div class="flex flex-wrap max-w-[60rem] gap-5 items-center justify-center">
-            <div v-for="[optionName, value] of Object.entries(options)" class="main-container flex flex-col gap-2 w-min flex-grow">
+            <div v-for="[optionName, optionData] of Object.entries(options)" class="main-container flex flex-col gap-2 w-min flex-grow">
                 <p class="font-bold bg-secondary w-max px-3 -translate-x-3 text-xl capitalize">{{ optionName.replaceAll("_", " ") }}</p>
                 <div class="flex items-center px-3 mx-3 h-10 mb-2 bg-[#030303]">
                     <img :src="imageUrl(optionName)" class="h-3/4">
-                    <input v-model="options[optionName]" v-if="typeof(value) == 'number' || typeof(value) == 'string'" :name="optionName" type="number" min="0" @input="update" class="!bg-transparent input w-full !px-1" placeholder="0">
-                    <div v-if="typeof(value) == 'boolean'" class="toggle">
-                        <input v-model="options[optionName]" :name="optionName" @change="update" type="checkbox" :checked='value'/>
+                    <input v-model="options[optionName]" v-if="typeof(optionData) == 'number' || typeof(optionData) == 'string'" :name="optionName" type="number" min="0" @input="update" class="!bg-transparent input w-full !px-1" placeholder="0">
+                    <div v-if="typeof(optionData) == 'boolean'" class="toggle">
+                        <input v-model="options[optionName]" :name="optionName" @change="update" type="checkbox" :checked='optionData'/>
                     </div>
-                    <div v-if="typeof(value) == 'object'" class="flex items-center mr-7 min-w-32">
+                    <div v-if="typeof(optionData) == 'object' && optionData.type == 'toggle'" class="flex items-center mr-7 min-w-32">
                         <div class="toggle">
-                            <input v-model="options[optionName][0]" :name="optionName" @change="update" type="checkbox" :checked='value[0]'/>
+                            <input v-model="optionData.state" :name="optionName" @change="update" type="checkbox" :checked='optionData.state'/>
                         </div>
-                        <p class="capitalize pl-2">{{ value[1][value[0]] }}</p>
+                        <p class="capitalize pl-2">{{ optionData.values[optionData.state] }}</p>
+                    </div>
+                    <div v-if="typeof(optionData) == 'object' && optionData.type == 'select'" class="flex items-center mr-7 min-w-32">
+                        <div v-if="typeof(optionData.state) == 'object'" class="select">
+                            <template v-for="[keys, key_values_array] of Object.entries(value.values)">
+                            <label class="capitalize p-2">{{ keys }}</label>
+                            <select @change="update" :name="keys">
+                                <option v-for="[index, key_values] of Object.entries(key_values_array)" :value=index>{{ key_values }}</option>
+                            </select>
+                            </template>
+                        </div>
+                        <div v-if="typeof(optionData.state) == 'number'" class="select">
+                            <select v-model="optionData.state" @change="update">
+                                <option v-for="[index, v] of Object.entries(optionData.values)" :value=parseInt(index)>{{ v }} </option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -65,8 +80,31 @@
                     days_until_pull: 0,
                     //refund_rares: true,
                     crystal_contract: false,
-                    banner_type: [false, {false: "character", true: "weapon"}]
+                    peak_value_assessment: {
+                        type: 'select',
+                        state: 0,
+                        values: [
+                            'N/A',
+                            'Wave 1',
+                            'Wave 2',
+                            'Wave 3',
+                            'Wave 4',
+                            'Wave 5',
+                            'Wave 6',
+                            'Wave 7',
+                        ]
+                    },
+
+                    banner_type: {
+                        type: 'toggle',
+                        state: false,
+                        values: {
+                            false: "character",
+                            true: "weapon",
+                        }
+                    }
                 },
+
                 display: {
                     stats: {
                         nextPull: "0.60",
@@ -79,7 +117,8 @@
                         owned: 0,
                         credit_token_exchange: 0,
                         commisions: 0,
-                        crystal_contract: 0
+                        crystal_contract: 0,
+                        peak_value_assessment: 0,
                     },
                     access_permission: {
                         total: 0,
@@ -120,7 +159,7 @@
                 for (let i = pullsAboveSoftcap + 1; i <= pityPulls + pullsAboveSoftcap; i++) {
                     chance *= (1 - (i * pityChance + baseChance))
                 }
-                
+
                 return (100 * (1 - chance))
             },
             update() {
@@ -142,6 +181,8 @@
                 this.display.collapse_piece.credit_token_exchange = this.options.credit_token
                 this.display.collapse_piece.commisions = 60 * this.options.days_until_pull
                 this.display.collapse_piece.crystal_contract = (this.options.crystal_contract) ? (80 * this.options.days_until_pull): 0
+                // array values are the amout of Collapse Pieces awarded for each Wave of PVA cleared
+                this.display.collapse_piece.peak_value_assessment = [0,20,20,25,25,30,30,40].slice(0, this.options.peak_value_assessment.state + 1).reduce((a, b) => a + b) * Math.floor(this.options.days_until_pull / 7)
                 this.display.collapse_piece.total = Object.values(this.display.collapse_piece).slice(1).reduce((a, b) => a + b)
 
                 this.display.access_permission.owned = this.options.access_permission
@@ -155,7 +196,7 @@
 
                 const accessPermissions = this.display.access_permission.total
 
-                if (this.options.banner_type[0]) {
+                if (this.options.banner_type.state) {
                     this.display.stats.nextPull = this.calculateChance(accessPermissions, 1, 0.007, 0.04518).toFixed(2)
                     this.display.stats.next10Pull = this.calculateChance(accessPermissions, 10, 0.007, 0.04518).toFixed(2)
                 } else {

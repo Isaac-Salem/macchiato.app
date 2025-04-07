@@ -17,6 +17,7 @@
         </div>
 
         <div class="grid grid-cols-[repeat(auto-fill,_9rem)] gap-3 w-full justify-between sm:justify-center">
+            <!-- fade out the cards for Dolls that don't have completed character info yet -->
             <div v-for="character in displayed" @click="redirect(`/characters/${character.name}`)" :class="!completed.includes(character.name) ? 'brightness-[30%] pointer-events-none': ''">
                 <div :class="character.rarity == 'ssr' ? 'from-[#ffd9a1]' : 'from-purple-300'" class="h-52 hover:brightness-105 transition-all duration-300 to-bg bg-gradient-to-b overflow-hidden relative group">
                     <div class="absolute bottom-0 h-10 w-full z-10 flex items-center justify-center text-lg bg-[#111111f3] backdrop-blur-md capitalize"><p>{{ character.name }}</p></div>
@@ -40,6 +41,7 @@
     export default {
         data() {
             return {
+                // list of characters that have complete entries in `public/data/characters.json`
                 completed: ["makiatto", "klukai", "centaureissi", "daiyan"],
                 characters: [],
                 displayed: [],
@@ -100,6 +102,7 @@
             }
         },
         mounted() {
+            // filter the list of attainable items for characters and sort in alphabetical order
             this.characters = attainablesLight.filter(attainable => attainable.item == "character").sort((a, b) => a.name.localeCompare(b.name))
 
             this.updateCharacters()
