@@ -15,12 +15,12 @@
                         </div>
                         <p class="capitalize pl-2">{{ optionData.values[optionData.state] }}</p>
                     </div>
-                    <div v-if="typeof(optionData) == 'object' && optionData.type == 'select'" class="flex items-center mr-7 min-w-32">
+                    <div v-if="typeof(optionData) == 'object' && optionData.type == 'select'" class="flex items-center min-w-32">
                         <div v-if="typeof(optionData.state) == 'object'" class="select">
-                            <template v-for="[keys, key_values_array] of Object.entries(value.values)">
+                            <template v-for="[keys, key_values_array] of Object.entries(optionData.values)">
                             <label class="capitalize p-2">{{ keys }}</label>
-                            <select @change="update" :name="keys">
-                                <option v-for="[index, key_values] of Object.entries(key_values_array)" :value=index>{{ key_values }}</option>
+                            <select v-model="optionData.state[keys]" @change="update" :name="keys">
+                                <option v-for="[index, key_values] of Object.entries(key_values_array)" :value=parseInt(index)>{{ key_values }}</option>
                             </select>
                             </template>
                         </div>
@@ -98,30 +98,32 @@
                         ]
                     },
 
-                    // TODO: need image and math
-                    // weekly_pvp_rank: {
-                    //     type: 'select',
-                    //     state: [0,0],
-                    //     values: {
-                    //         title: [
-                    //             'N/A',
-                    //             'Junior',
-                    //             'Professional',
-                    //             'Elite',
-                    //             'Adept',
-                    //             'Expert',
-                    //             'Master',
-                    //         ],
-                    //         rank:[
-                    //             'N/A',
-                    //             'I',
-                    //             'II',
-                    //             'III',
-                    //             'IV',
-                    //             'V',
-                    //         ],
-                    //     }
-                    // },
+                    pvp_rank: {
+                        type: 'select',
+                        state: {
+                            title: 0,
+                            rank:  0
+                        },
+                        values: {
+                            title: [
+                                'N/A',
+                                'Junior',
+                                'Professional',
+                                'Elite',
+                                'Adept',
+                                'Expert',
+                                'Master',
+                            ],
+                            rank:[
+                                'N/A',
+                                'I',
+                                'II',
+                                'III',
+                                'IV',
+                                'V',
+                            ],
+                        }
+                    },
 
                     // battle_pass: true, // base is 11 peice boxes, with 5 in each
                                           // paid is 11 more with 10 in each, and flat +680 on top
@@ -135,10 +137,10 @@
 
                     banner_type: {
                         type: 'toggle',
-                        state: false,
+                        state: true,
                         values: {
-                            false: "character",
-                            true: "weapon",
+                            false: "weapon",
+                            true: "character",
                         }
                     }
                 },
@@ -158,6 +160,7 @@
                         crystal_contract: 0,
                         platoon_daily: 0,
                         pvp_drill_daily: 0,
+                        pvp_rank: 0,
                         peak_value_assessment: 0,
                     },
                     access_permission: {
@@ -225,6 +228,19 @@
                 this.display.collapse_piece.crystal_contract = (this.options.crystal_contract) ? (80 * this.options.days_until_pull): 0
                 // array values are the amout of Collapse Pieces awarded for each Wave of PVA cleared
                 this.display.collapse_piece.peak_value_assessment = [0,20,20,25,25,30,30,40].slice(0, this.options.peak_value_assessment.state + 1).reduce((a, b) => a + b) * Math.floor(this.options.days_until_pull / 7)
+
+                if (this.options.pvp_rank.state.title == 0 || this.options.pvp_rank.state.rank == 0) {
+                    this.display.collapse_piece.pvp_rank = 0;
+                }
+                else
+                {
+                    // weekly pvp rank rewards start at 80 and then increases by 5 for each rank
+                    // each Rank is worth 5 Collapse Pieces, but since Ranks go from 5 to 1, we need to get its compliment and multiply by 5 to get the correct amount
+                    // each Title is 5 Ranks, each one is worth 25 Collapse Pieces, except the first Title (Junior) which doesn't award any
+                    this.display.collapse_piece.pvp_rank = (80 + (5**2 * (this.options.pvp_rank.state.title - 1) + 5 * (5 - this.options.pvp_rank.state.rank))) * Math.floor(this.options.days_until_pull / 7)
+                }
+
+                // [0,20,20,25,25,30,30,40].slice(0, this.options.pvp_rank.state + 1).reduce((a, b) => a + b) * Math.floor(this.options.days_until_pull / 7)
                 this.display.collapse_piece.total = Object.values(this.display.collapse_piece).slice(1).reduce((a, b) => a + b)
 
                 this.display.access_permission.owned = this.options.access_permission
@@ -239,11 +255,11 @@
                 const accessPermissions = this.display.access_permission.total
 
                 if (this.options.banner_type.state) {
-                    this.display.stats.nextPull = this.calculateChance(accessPermissions, 1, 0.007, 0.04518).toFixed(2)
-                    this.display.stats.next10Pull = this.calculateChance(accessPermissions, 10, 0.007, 0.04518).toFixed(2)
-                } else {
                     this.display.stats.nextPull = this.calculateChance(accessPermissions, 1, 0.006, 0.04518).toFixed(2)
                     this.display.stats.next10Pull = this.calculateChance(accessPermissions, 10, 0.006, 0.04518).toFixed(2)
+                } else {
+                    this.display.stats.nextPull = this.calculateChance(accessPermissions, 1, 0.007, 0.04518).toFixed(2)
+                    this.display.stats.next10Pull = this.calculateChance(accessPermissions, 10, 0.007, 0.04518).toFixed(2)
                 }
 
                 this.display.stats.softPity = (1 - ((58 - accessPermissions) / 58)).toFixed(2)
