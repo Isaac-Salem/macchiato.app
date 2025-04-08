@@ -133,7 +133,9 @@
                     // platoon_gs_personal: [0-all],
                     // platoon_gs_platoon: [0-all],
                     // expansion_drill: [0-10], // it's 0-40 stars but only every 4. There are 10 nodes so 0-10 could work too
-                    // monthy_login: true, // its 15 every first day and 4th day of the week. Can prob do something with modulo on the # of days to wait
+
+                    // TODO: add an option for current login streak for daily login
+                    daily_login: true,
 
                     banner_type: {
                         type: 'toggle',
@@ -158,6 +160,7 @@
                         credit_token_exchange: 0,
                         commisions: 0,
                         crystal_contract: 0,
+                        daily_login: 0,
                         platoon_daily: 0,
                         pvp_drill_daily: 0,
                         pvp_rank: 0,
@@ -228,6 +231,10 @@
                 this.display.collapse_piece.crystal_contract = (this.options.crystal_contract) ? (80 * this.options.days_until_pull): 0
                 // array values are the amout of Collapse Pieces awarded for each Wave of PVA cleared
                 this.display.collapse_piece.peak_value_assessment = [0,20,20,25,25,30,30,40].slice(0, this.options.peak_value_assessment.state + 1).reduce((a, b) => a + b) * Math.floor(this.options.days_until_pull / 7)
+                // for every full week of login, you get 30 Collapse Pieces
+                // for the remaining days of the week, you get 15 Collapse Pieces on the 1st and 4th days
+                // by dividing the remaining days by 3 and rounding up, we get 0, 1, or 2 for the number of times we need to add 15
+                this.display.collapse_piece.daily_login = (this.options.daily_login) ? 30 * (Math.floor(this.options.days_until_pull / 7)) + 15 * Math.ceil((this.options.days_until_pull % 7)/3): 0
 
                 if (this.options.pvp_rank.state.title == 0 || this.options.pvp_rank.state.rank == 0) {
                     this.display.collapse_piece.pvp_rank = 0;
