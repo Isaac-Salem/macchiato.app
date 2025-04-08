@@ -80,6 +80,9 @@
                     days_until_pull: 0,
                     //refund_rares: true,
                     crystal_contract: false,
+                    platoon_daily: true,
+                    pvp_drill_daily: true,
+
                     peak_value_assessment: {
                         type: 'select',
                         state: 0,
@@ -94,6 +97,41 @@
                             'Wave 7',
                         ]
                     },
+
+                    // TODO: need image and math
+                    // weekly_pvp_rank: {
+                    //     type: 'select',
+                    //     state: [0,0],
+                    //     values: {
+                    //         title: [
+                    //             'N/A',
+                    //             'Junior',
+                    //             'Professional',
+                    //             'Elite',
+                    //             'Adept',
+                    //             'Expert',
+                    //             'Master',
+                    //         ],
+                    //         rank:[
+                    //             'N/A',
+                    //             'I',
+                    //             'II',
+                    //             'III',
+                    //             'IV',
+                    //             'V',
+                    //         ],
+                    //     }
+                    // },
+
+                    // battle_pass: true, // base is 11 peice boxes, with 5 in each
+                                          // paid is 11 more with 10 in each, and flat +680 on top
+                                          // 20$ paid is +600 more
+
+                    // monthy_military_sim_participation: true,
+                    // platoon_gs_personal: [0-all],
+                    // platoon_gs_platoon: [0-all],
+                    // expansion_drill: [0-10], // it's 0-40 stars but only every 4. There are 10 nodes so 0-10 could work too
+                    // monthy_login: true, // its 15 every first day and 4th day of the week. Can prob do something with modulo on the # of days to wait
 
                     banner_type: {
                         type: 'toggle',
@@ -118,6 +156,8 @@
                         credit_token_exchange: 0,
                         commisions: 0,
                         crystal_contract: 0,
+                        platoon_daily: 0,
+                        pvp_drill_daily: 0,
                         peak_value_assessment: 0,
                     },
                     access_permission: {
@@ -180,6 +220,8 @@
                 this.display.collapse_piece.owned = this.options.collapse_piece
                 this.display.collapse_piece.credit_token_exchange = this.options.credit_token
                 this.display.collapse_piece.commisions = 60 * this.options.days_until_pull
+                this.display.collapse_piece.platoon_daily = (this.options.platoon_daily) ? (20 * this.options.days_until_pull): 0
+                this.display.collapse_piece.pvp_drill_daily = (this.options.pvp_drill_daily) ? (30 * this.options.days_until_pull): 0
                 this.display.collapse_piece.crystal_contract = (this.options.crystal_contract) ? (80 * this.options.days_until_pull): 0
                 // array values are the amout of Collapse Pieces awarded for each Wave of PVA cleared
                 this.display.collapse_piece.peak_value_assessment = [0,20,20,25,25,30,30,40].slice(0, this.options.peak_value_assessment.state + 1).reduce((a, b) => a + b) * Math.floor(this.options.days_until_pull / 7)
@@ -188,7 +230,7 @@
                 this.display.access_permission.owned = this.options.access_permission
                 this.display.access_permission.previous_pulls = this.options.current_pity
                 this.display.access_permission.collapse_piece_exchange = Math.floor(this.display.collapse_piece.total / 150)
-                this.display.access_permission.withdrawal_receipts_exchange = (1 + Math.floor(this.options.days_until_pull / 7)) * Math.min(Math.floor(this.options.withdrawal_receipts / 20), 5)
+                this.display.access_permission.withdrawal_receipts_exchange = (1 + Math.floor(this.options.days_until_pull / 30)) * Math.min(Math.floor(this.options.withdrawal_receipts / 20), 5)
                 this.display.access_permission.total = Object.values(this.display.access_permission).slice(1).reduce((a, b) => a + b)
                 //const total = Object.values(this.display.access_permission).slice(1).reduce((a, b) => a + b)
                 //this.display.access_permission.rare_refunds = Math.floor((total * 1.7) / 20)
