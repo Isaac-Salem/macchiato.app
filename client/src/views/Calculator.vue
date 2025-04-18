@@ -133,6 +133,16 @@
                     // monthy_military_sim_participation: true,
                     // platoon_gs_personal: [0-all],
                     // platoon_gs_platoon: [0-all],
+                    boundary_push_bounties:{
+                        type: 'select',
+                        state: 0,
+                        values: [
+                            "N/A",
+                            "Surface Layer",
+                            "Intermediate Layer",
+                            "Deep Layer"
+                        ],
+                    },
 
                     // TODO: add feild for days until Drill reset
                     expansion_drill: {
@@ -185,6 +195,7 @@
                         pvp_rank: 0,
                         expansion_drill: 0,
                         peak_value_assessment: 0,
+                        boundary_push_bounties: 0,
                     },
                     access_permission: {
                         total: 0,
@@ -262,6 +273,10 @@
 
                 //each Expansion Drill cleared awards 50 Collapse Pieces
                 this.display.collapse_piece.expansion_drill = 50 * this.options.expansion_drill.state * Math.floor(this.options.days_until_pull / 14)
+
+                // asumes you do all 4 bounties per week
+                let bounty_depth_rewards = [0,20,25,30]
+                this.display.collapse_piece.boundary_push_bounties = 4 * bounty_depth_rewards[this.options.boundary_push_bounties.state] * Math.floor(this.options.days_until_pull / 7)
 
                 if (this.options.pvp_rank.state.title == 0 || this.options.pvp_rank.state.rank == 0) {
                     this.display.collapse_piece.pvp_rank = 0;
