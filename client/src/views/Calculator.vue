@@ -131,9 +131,39 @@
                                           // paid is 11 more with 10 in each, and flat +680 on top
                                           // 20$ paid is +600 more on top of that
                     // monthy_military_sim_participation: true,
-                    // platoon_gs_personal: [0-all],
-                    // platoon_gs_platoon: [0-all],
-                    boundary_push_bounties:{
+
+
+                    // gunsmoke is once every 3 weeks
+                    gunsmoke_individual: {
+                        type: 'select',
+                        state: 0,
+                        values: [
+                            "N/A",
+                            "600",
+                            "2000",
+                            "3800",
+                            "8600",
+                            "11600",
+                            "15400"
+                        ],
+                    },
+
+                    gunsmoke_platoon: {
+                        type: 'select',
+                        state: 0,
+                        values: [
+                            "N/A",
+                            "10000",
+                            "25000",
+                            "50000",
+                            "125000",
+                            "175000",
+                            "225000"
+                        ],
+                    },
+
+
+                    boundary_push_bounties: {
                         type: 'select',
                         state: 0,
                         values: [
@@ -145,6 +175,7 @@
                     },
 
                     // TODO: add feild for days until Drill reset
+                    //       could probably calculate this from the current day since it resets on sundays
                     expansion_drill: {
                         type: 'select',
                         state: 0,
@@ -191,6 +222,8 @@
                         crystal_contract: 0,
                         daily_login: 0,
                         platoon_daily: 0,
+                        gunsmoke_individual: 0,
+                        gunsmoke_platoon: 0,
                         pvp_drill_daily: 0,
                         pvp_rank: 0,
                         expansion_drill: 0,
@@ -273,6 +306,10 @@
 
                 //each Expansion Drill cleared awards 50 Collapse Pieces
                 this.display.collapse_piece.expansion_drill = 50 * this.options.expansion_drill.state * Math.floor(this.options.days_until_pull / 14)
+
+                // each Gunsmoke individual and platoon points tier awards 50 Collapse Pieces, and gunsmoke is run once every 3 weeks
+                this.display.collapse_piece.gunsmoke_individual = 50 * this.options.gunsmoke_individual.state * Math.floor(this.options.days_until_pull / 21)
+                this.display.collapse_piece.gunsmoke_platoon = 50 * this.options.gunsmoke_platoon.state * Math.floor(this.options.days_until_pull / 21)
 
                 // asumes you do all 4 bounties per week
                 let bounty_depth_rewards = [0,20,25,30]
