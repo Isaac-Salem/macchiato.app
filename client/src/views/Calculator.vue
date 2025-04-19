@@ -126,12 +126,46 @@
                     },
 
 
-                    // TODO: implement these once duration/timing is known
-                    // battle_pass: true, // base is 11 piece boxes, with 5 in each
-                                          // paid is 11 more with 10 in each, and flat +680 on top
-                                          // 20$ paid is +600 more on top of that
-                    // monthy_military_sim_participation: true,
+                    // TODO: need to calc the number of tickets for paid voyage pass
+                    // 35 days for a full cycle, 31 days active, then 4 days off
+                    // allegedly, CN server switches to 23 day cycles
+                    //     (unsure if this includes the 4 day off, or if it's 27 day cycles after including them)
 
+                    voyage_pass: {
+                        type: 'select',
+                        state: 0,
+                        values: [
+                            "N/A",
+                            "Free to Play",     // base is 11 piece boxes, with 5 in each
+                            "Hunter's Path",    // paid is 11 more with 10 in each, and flat +680 on top
+                            "Broker's Path",    // 20$ paid is +600 more on top of that
+                        ],
+                        durration: 35,
+
+                        pieces_per_pass: (() => {
+                            let num_cp_boxes = 11;
+                            let cp_per_box = [0,5,10,10];
+                            let additional_flat_cp = [0,0,680,600];
+
+                            let pieces = [];
+
+                            for (let i = 0; i < cp_per_box.length; i++) {
+                                pieces[i] = num_cp_boxes * cp_per_box[i] + additional_flat_cp.slice(0,i+1).reduce((a, b) => a + b);
+                            }
+
+                            // each of the paid BPs also include the free BP,
+                            // so add the free pass count to the paid ones
+                            pieces[2] += pieces[1];
+                            pieces[3] += pieces[1];
+
+                            return pieces;
+                        })(),
+
+                        // any paid tier of the voyage pass gives 4 extra access permissions
+                        access_permission_per_pass: [0,0,4,4],
+                    },
+
+                    // monthy_military_sim_participation: true,
 
                     // gunsmoke is once every 3 weeks
                     gunsmoke_individual: {
@@ -220,6 +254,7 @@
                         credit_token_exchange: 0,
                         commisions: 0,
                         crystal_contract: 0,
+                        voyage_pass: 0,
                         daily_login: 0,
                         platoon_daily: 0,
                         gunsmoke_individual: 0,
@@ -234,6 +269,7 @@
                         total: 0,
                         owned: 0,
                         previous_pulls: 0,
+                        paid_voyage_pass: 0,
                         collapse_piece_exchange: 0,
                         withdrawal_receipts_exchange: 0,
                         //rare_refunds: 0
@@ -310,6 +346,10 @@
                 // each Gunsmoke individual and platoon points tier awards 50 Collapse Pieces, and gunsmoke is run once every 3 weeks
                 this.display.collapse_piece.gunsmoke_individual = 50 * this.options.gunsmoke_individual.state * Math.floor(this.options.days_until_pull / 21)
                 this.display.collapse_piece.gunsmoke_platoon = 50 * this.options.gunsmoke_platoon.state * Math.floor(this.options.days_until_pull / 21)
+
+                // voyage_pass
+                this.display.collapse_piece.voyage_pass = this.options.voyage_pass.pieces_per_pass[this.options.voyage_pass.state] * Math.floor(this.options.days_until_pull / this.options.voyage_pass.durration)
+                this.display.access_permission.paid_voyage_pass = this.options.voyage_pass.access_permission_per_pass[this.options.voyage_pass.state] * Math.floor(this.options.days_until_pull / this.options.voyage_pass.durration)
 
                 // asumes you do all 4 bounties per week
                 let bounty_depth_rewards = [0,20,25,30]
