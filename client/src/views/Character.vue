@@ -8,13 +8,13 @@
                             <p :class="`gradient-${character.rarity}`" class="text-main font-bold text-2xl translate-y-0.5 !text-[1.6rem] px-3">{{ character.rarity.toUpperCase() }}</p>
                             <p class="text-main font-harmony font-black text-4xl h-min">{{ character.name }}</p>
                         </div>
-                        <img :class="character.name.length > 8 ? 'scale-x-125' : ''" class="absolute w-full h-full drop-shadow-lg" src="/calculated_background.webp" alt="">
+                        <img :class="character.name.length > 8 ? 'scale-x-125' : ''" class="absolute w-full h-full drop-shadow-lg" src="./calculated_background.webp" alt="">
                     </div>
-                    <img class="px-0 h-full object-cover max-h-[21rem]" :src="`/charactersFull/${character.name}_small.webp`" :alt="character.name">
+                    <img class="px-0 h-full object-cover max-h-[21rem]" :src="`./charactersFull/${character.name}_small.webp`" :alt="character.name">
                 </div>
                 <div class="flex flex-col sm:w-full gap-2 pt-[4.7rem] sm:pt-0">
                     <div class="flex gap-2 flex-wrap sm:justify-center">
-                        <p v-for="title of ['role', 'element', 'weapon', 'affiliation']" :class="character[title] ? '' : 'invisible !p-0'" class="bg-secondary p-1 w-max px-2 capitalize inline-image"><img v-if="!(title == 'affiliation' || title == 'weapon')" :src="`/icons/${character[title]}.webp`" alt="">{{ title == 'weapon' ? character[title].toUpperCase() : character[title] }}</p>
+                        <p v-for="title of ['role', 'element', 'weapon', 'affiliation']" :class="character[title] ? '' : 'invisible !p-0'" class="bg-secondary p-1 w-max px-2 capitalize inline-image"><img v-if="!(title == 'affiliation' || title == 'weapon')" :src="`./icons/${character[title]}.webp`" alt="">{{ title == 'weapon' ? character[title].toUpperCase() : character[title] }}</p>
                     </div>
                     <div class="main-container sm:max-w-none max-w-[33.4rem] sm:w-full min-h-[5.3rem] p-2 h-auto flex items-center"><p>{{ character.description }}</p></div>
                     <div class="main-container sm:max-w-none max-w-[33.4rem] sm:w-full flex-col">
@@ -39,10 +39,10 @@
                             <p class="absolute z-30 bottom-3 left-[1rem] brightness-75 text-sm font-bold text-description">Best In Slot</p>
                             <p class="absolute z-30 -bottom-2 left-[1rem] text-main font-bold capitalize w-48">{{ character.signature.replaceAll("_", " ") }}</p>
                             <img class="absolute z-10 -bottom-3 left-1 w-48" src="/calculated_background.webp" alt="">
-                            <img class="h-full scale-[130%] pl-5 -translate-y-2 rotate-[5deg] z-20" :src="`/weapons/${character.signature}.webp`" :alt="character.signature">
+                            <img class="h-full scale-[130%] pl-5 -translate-y-2 rotate-[5deg] z-20" :src="`./weapons/${character.signature}.webp`" :alt="character.signature">
                         </div>
                         <div v-for="[i, weapon] in Object.entries(character.weapons)" class="w-full h-10 flex">
-                            <img :class="[ i == 0 ? 'gradient-ssr' : 'gradient-sr' ]" class="h-full w-16 object-contain" :src="`/weapons/${typeof(weapon) == 'string' ? weapon : weapon[0]}.webp`" :alt="weapon">
+                            <img :class="[ i == 0 ? 'gradient-ssr' : 'gradient-sr' ]" class="h-full w-16 object-contain" :src="`./weapons/${typeof(weapon) == 'string' ? weapon : weapon[0]}.webp`" :alt="weapon">
                             <p class="h-full bg-main-light font-bold py-1 text-center w-full capitalize">{{ typeof(weapon) == "string" ? weapon.replaceAll("_", " ") : weapon[1] }}</p>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                 <div class="flex gap-2 p-2 flex-wrap">
                     <div v-for="[type, skill] of Object.entries(character.skills)" class="w-[33.5rem] bg-main-light p-2 flex flex-grow relative">
                         <div class="min-w-16 max-w-16 sm:max-w-10 sm:min-w-10 sm:h-10 flex flex-col gap-2">
-                            <img class="border border-description h-16" :src="`/skills/${skill.image_overwrite || skill.name}.webp`" :alt="skill.name">
+                            <img class="border border-description h-16" :src="`./skills/${skill.image_overwrite || skill.name}.webp`" :alt="skill.name">
                             <span class="text-description text-center capitalize text-sm sm:text-xs">{{ type.replaceAll("_", " ") }}</span>
                         </div>
                         <div class="pl-3 flex flex-col">
@@ -139,14 +139,14 @@
                     .replace(/<el\s+(\w+)[^>]*>(.*?)<\/el>/g, '<span class="relative" style="color: var(--$1)">$2</span>')
                     .replace(/<(ef*)\b[^>]*>(.*?)<\/\1>/g, '<span class="text-blue-300">$2</span>')
                     .replaceAll("\n", "<br/>")
-                    //.replace(/<el\s+(\w+)[^>]*>(.*?)<\/el>/g, '<span class="relative" style="color: var(--$1)"><img class="absolute top-0 left-0 min-w-5 h-5 translate-y-0.5" src="/icons/$1.webp"><span class="pl-5">$2</span></span>')
+                    //.replace(/<el\s+(\w+)[^>]*>(.*?)<\/el>/g, '<span class="relative" style="color: var(--$1)"><img class="absolute top-0 left-0 min-w-5 h-5 translate-y-0.5" src="./icons/$1.webp"><span class="pl-5">$2</span></span>')
 
                 return description
             }
         },
         async mounted() {
             const characters = await fetch("/data/characters.json").then(response => response.json())
-            
+
             const characterName = this.$route.params.name
 
             if (characterName && characters[characterName]) {

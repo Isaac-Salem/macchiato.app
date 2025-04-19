@@ -5,7 +5,7 @@
         <div class="w-40 flex flex-col mb:flex-row mb:items-center mb:justify-center mb:w-full flex-wrap gap-2">
             <button @click="updateBanner(banner)" v-for="banner of banners" :class="(banner.name == bannerFocused.name) ? 'scale-110 mb:!translate-x-0 translate-x-2 hover:scale-[1.12] hover:translate-x-2.5': 'hover:scale-105 hover:translate-x-1'" class="banner min-w-40 w-40 h-20 mb:mx-2 relative group transition-transform">
                 <div :class="(banner.name == bannerFocused.name) ? 'overflow-hidden': 'overflow-hidden'" class="absolute w-full bottom-0 h-[81%] rounded-md">
-                    <img :class="(banner.name == bannerFocused.name) ? 'group-hover:scale-110 scale-105': ''" class="absolute w-full h-20 bottom-0 transition-transform" :src="`/banners/${(banner.name == bannerFocused.name) ? `${banner.name}_focused`: banner.name}.webp`">
+                    <img :class="(banner.name == bannerFocused.name) ? 'group-hover:scale-110 scale-105': ''" class="absolute w-full h-20 bottom-0 transition-transform" :src="`./banners/${(banner.name == bannerFocused.name) ? `${banner.name}_focused`: banner.name}.webp`">
                 </div>
                 <div :class="(banner.name == bannerFocused.name) ? 'outline-highlight': 'group-hover:outline-[#9b8d76]'" class="absolute bottom-0 outline outline-2 outline-description rounded-md -z-10 w-full h-[81%]"></div>
             </button>
@@ -18,7 +18,7 @@
                 <div class="flex items-center sm:justify-center gap-3 flex-wrap">
                     <p class="text-5xl font-black font-harmony-sans capitalize">{{ (bannerFocused.displayName || bannerFocused.name).replaceAll("_", " ") }}</p>
                     <div class="flex flex-wrap sm:justify-center gap-3">
-                        <p v-if="labels" :class="(labels[1].length > 35) ? 'text-[1.05rem]': 'text-xl'" class="bg-main-light text-[1.1rem] text-description h-8 w-max px-3 rounded-md capitalize inline-image"><img v-if="!(Number(labels[0].length) < 5)" :src="`/icons/${labels[0]}.webp`"> {{ labels[0] }}</p>
+                        <p v-if="labels" :class="(labels[1].length > 35) ? 'text-[1.05rem]': 'text-xl'" class="bg-main-light text-[1.1rem] text-description h-8 w-max px-3 rounded-md capitalize inline-image"><img v-if="!(Number(labels[0].length) < 5)" :src="`./icons/${labels[0]}.webp`"> {{ labels[0] }}</p>
                         <p v-if="labels" :class="(labels[1].length > 35) ? 'text-[1.05rem]': 'text-xl'" class="bg-main-light text-description flex items-center h-8 w-max px-3 rounded-md capitalize">{{ labels[1] }}</p>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="w-[19rem] sm:w-full h-full px-4 pt-2 flex justify-center flex-wrap content-start overflow-y-auto mb-4">
                             <div v-for="pull in gacha.banners[bannerFocused.type].pulls.filter(pull => pull[4] == 'ssr')" class="w-[3.9rem] h-[3.9rem] relative overflow-hidden">
-                                <img style="clip-path: polygon(10% 0, 100% 10%, 90% 100%, 0 85%)" :class="(pull[3] == 'weapon') ? 'pull-weapon !right-3': ''" class="absolute z-10 top-1 w-full scale-95 rounded-lg" :src="`/${pull[3]}s/${pull[1]}.webp`">
+                                <img style="clip-path: polygon(10% 0, 100% 10%, 90% 100%, 0 85%)" :class="(pull[3] == 'weapon') ? 'pull-weapon !right-3': ''" class="absolute z-10 top-1 w-full scale-95 rounded-lg" :src="`./${pull[3]}s/${pull[1]}.webp`">
                                 <img class="absolute" src="/pull_background.webp">
                                 <p class="absolute right-0 top-10 z-10 font-bold bg-secondary w-5 text-center">{{ pull[5] }}</p>
                             </div>
@@ -94,7 +94,7 @@
                                     <tr v-for="pull in gacha.banners[bannerFocused.type].pulls.filter(pull => filters.rarities[pull[4]]).slice(0, filters.amount)" :class="`pull-${pull[4]}`" class="h-10 border-t border-[#2c3038]">
                                         <th class="w-[12.5rem] sm:w-[5rem] pl-5 text-description">{{ pull[0] }}</th>
                                         <th><div class="flex justify-center">{{ pull[5] }}<Tooltip v-if="pull[6]" message="Guaranteed"><img class="w-2" src="/guaranteed.webp"></Tooltip></div></th>
-                                        <th class="text-left pl-2 flex items-center sm:mt-1 capitalize"><img :class="`pull-${pull[3]}`" class="w-10 h-10 mr-2" :src="`/${pull[3]}s/${pull[1]}.webp`">{{ pull[2] }}</th>
+                                        <th class="text-left pl-2 flex items-center sm:mt-1 capitalize"><img :class="`pull-${pull[3]}`" class="w-10 h-10 mr-2" :src="`./${pull[3]}s/${pull[1]}.webp`">{{ pull[2] }}</th>
                                     </tr>
                                 </tbody>
                             </table>

@@ -305,9 +305,9 @@
                 const items = ["access_permission", "collapse_piece", "credit_token", "withdrawal_receipts"]
 
                 if (items.includes(optionName)) {
-                    return `/items/${optionName.replace("access_permission", "targeted_access_permission")}.webp`
+                    return `./items/${optionName.replace("access_permission", "targeted_access_permission")}.webp`
                 } else {
-                    return `/${optionName}.webp`
+                    return `./${optionName}.webp`
                 }
             },
 
