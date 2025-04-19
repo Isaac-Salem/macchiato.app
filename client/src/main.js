@@ -22,7 +22,8 @@ const routes = [
 ]
 
 const router = VueRouter.createRouter({
-    history: VueRouter.createWebHistory(),
+    // history: VueRouter.createWebHistory(process.env.GITHUB_PAGES ? '/macchiato.app/' : '/'),
+    history: VueRouter.createWebHistory('/macchiato.app/'),
     scrollBehavior() {return { top: 0 }},
     routes
 })
