@@ -83,6 +83,9 @@
                     platoon_daily: true,
                     pvp_drill_daily: true,
 
+                    // assumes full participation for all rewards
+                    military_sim: true,
+
                     peak_value_assessment: {
                         type: 'select',
                         state: 0,
@@ -164,8 +167,6 @@
                         // any paid tier of the voyage pass gives 4 extra access permissions
                         access_permission_per_pass: [0,0,4,4],
                     },
-
-                    // monthy_military_sim_participation: true,
 
                     // gunsmoke is once every 3 weeks
                     gunsmoke_individual: {
@@ -261,6 +262,7 @@
                         gunsmoke_platoon: 0,
                         pvp_drill_daily: 0,
                         pvp_rank: 0,
+                        military_sim: 0,
                         expansion_drill: 0,
                         peak_value_assessment: 0,
                         boundary_push_bounties: 0,
@@ -332,6 +334,10 @@
                 this.display.collapse_piece.platoon_daily = (this.options.platoon_daily) ? (20 * this.options.days_until_pull): 0
                 this.display.collapse_piece.pvp_drill_daily = (this.options.pvp_drill_daily) ? (30 * this.options.days_until_pull): 0
                 this.display.collapse_piece.crystal_contract = (this.options.crystal_contract) ? (80 * this.options.days_until_pull): 0
+
+                // TODO: updated this with the correct cycle/duration, right now it just assumes 35 days, the same as the battle pass
+                // 300 collapse pieces a month for military sim
+                this.display.collapse_piece.military_sim = (this.options.military_sim) ? (300 * Math.floor(this.options.days_until_pull / 35)): 0
                 // array values are the amout of Collapse Pieces awarded for each Wave of PVA cleared
                 this.display.collapse_piece.peak_value_assessment = [0,20,20,25,25,30,30,40].slice(0, this.options.peak_value_assessment.state + 1).reduce((a, b) => a + b) * Math.floor(this.options.days_until_pull / 7)
 
