@@ -196,6 +196,26 @@
                             "225000"
                         ],
                     },
+                    gunsmoke_rank: {
+                        type: 'select',
+                        state: 0,
+                        values: [
+                            "N/A",
+                            "Top 5%",
+                            "Top 10%",
+                            "Top 20%",
+                            "Top 50%",
+                            "Top 100%",
+                        ],
+                        pieces_per_rank: [
+                            0,
+                            500,
+                            450,
+                            400,
+                            350,
+                            300
+                        ],
+                    },
 
 
                     boundary_push_bounties: {
@@ -260,6 +280,7 @@
                         platoon_daily: 0,
                         gunsmoke_individual: 0,
                         gunsmoke_platoon: 0,
+                        gunsmoke_rank: 0,
                         pvp_drill_daily: 0,
                         pvp_rank: 0,
                         military_sim: 0,
@@ -352,6 +373,8 @@
                 // each Gunsmoke individual and platoon points tier awards 50 Collapse Pieces, and gunsmoke is run once every 3 weeks
                 this.display.collapse_piece.gunsmoke_individual = 50 * this.options.gunsmoke_individual.state * Math.floor(this.options.days_until_pull / 21)
                 this.display.collapse_piece.gunsmoke_platoon = 50 * this.options.gunsmoke_platoon.state * Math.floor(this.options.days_until_pull / 21)
+
+                this.display.collapse_piece.gunsmoke_rank = this.options.gunsmoke_rank.pieces_per_rank[this.options.gunsmoke_rank.state] * Math.floor(this.options.days_until_pull / 21)
 
                 // voyage_pass
                 this.display.collapse_piece.voyage_pass = this.options.voyage_pass.pieces_per_pass[this.options.voyage_pass.state] * Math.floor(this.options.days_until_pull / this.options.voyage_pass.durration)
